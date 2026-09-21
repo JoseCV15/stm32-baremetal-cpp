@@ -54,7 +54,7 @@ SECTIONS
      *   etc.
      *
      */
-
+/*
     .application_header ALIGN(16) :
     {
         __app_header_start = .;
@@ -66,7 +66,7 @@ SECTIONS
     } > FLASH
 
     __app_header_size = ABSOLUTE(__app_header_end - __app_header_start);
-
+*/
     /*
      * --------------------------------------------------------
      * Application Signature
@@ -74,7 +74,7 @@ SECTIONS
      *
      * Reserved area for firmware authentication/signature.
      */
-
+/*
     .application_signature ALIGN(16) :
     {
         __app_signature_start = .;
@@ -86,10 +86,9 @@ SECTIONS
     } > FLASH
 
     __app_signature_size = ABSOLUTE(__app_signature_end - __app_signature_start);
-
+*/
 
     /* Program Code */
-
     .text ALIGN(4) :
     {
         KEEP(*(.text))
@@ -113,7 +112,6 @@ SECTIONS
      *
      * Functions executed before normal C++ initialization.
      */
-
     .preinit_array ALIGN(4) :
     {
         PROVIDE_HIDDEN(__preinit_array_start = .);
@@ -154,7 +152,7 @@ SECTIONS
      * C++ Static Destruction
      * --------------------------------------------------------
      *
-     * Not normally used in embedded targets
+     * Not normally used
      */
 
     .fini_array ALIGN(4) :

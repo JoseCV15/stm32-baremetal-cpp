@@ -16,6 +16,8 @@ extern init_func_t __init_array_end[];
 extern init_func_t __preinit_array_start[];
 extern init_func_t __preinit_array_end[];
 
+#define WEAK_DEFAULT_HANDLER(handler) void handler(void) __attribute__((weak, alias("Default_Handler")))
+
 extern int main(void);
 typedef void (*Interrupt_Handler)(void);
 void Reset_Handler(void);
@@ -122,7 +124,6 @@ void Default_Handler(void)
     }
 }
 
-#define WEAK_DEFAULT_HANDLER(handler) void handler(void) __attribute__((weak, alias("Default_Handler")))
 
 
 /* Cortex-M4 exceptions */
@@ -251,7 +252,6 @@ static void zero_bss(void)
 /*
  * Initialize C++ static objects
  */
-
 static void call_cpp_constructors(void)
 {
     for (init_func_t *func = __preinit_array_start; func < __preinit_array_end; ++func){
@@ -266,7 +266,6 @@ static void call_cpp_constructors(void)
 /*
  * Reset Handler
  */
-
 void Reset_Handler(void)
 {
     SCB->VTOR = 0x08008000U;

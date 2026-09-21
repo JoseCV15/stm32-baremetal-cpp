@@ -52,7 +52,8 @@ APP_C_SOURCES := \
 	startup/startup.c
 
 APP_CPP_SOURCES := \
-	application/main.cpp
+	application/main.cpp \
+	drivers/gpio/Gpio.cpp
 
 #----------------------------------------------------------------------
 # Include paths
@@ -64,7 +65,7 @@ INCLUDES := \
 	-Istartup \
 	-Iapplication \
 	-Ibootloader \
-	-Idrivers \
+	-Idrivers/gpio \
 	-Iservices \
 	-Imiddleware \
 	-Iconfig
@@ -120,17 +121,9 @@ LDLIBS := \
 #----------------------------------------------------------------------
 
 
-
-BOOT_C_OBJECTS := \
-	$(BUILD_DIR)/bootloader/obj/bootloader_startup.o
-
-BOOT_CPP_OBJECTS := \
-	$(BUILD_DIR)/bootloader/obj/main.o \
-	$(BUILD_DIR)/bootloader/obj/BootManager.o
-
-BOOT_OBJECTS := \
-	$(BOOT_C_OBJECTS) \
-	$(BOOT_CPP_OBJECTS)
+BOOT_C_OBJECTS := $(patsubst %.c, $(BUILD_DIR)/bootloader/obj/%.o, $(BOOT_C_SOURCES))
+BOOT_CPP_OBJECTS := $(patsubst %.cpp, $(BUILD_DIR)/bootloader/obj/%.o, $(BOOT_CPP_SOURCES))
+BOOT_OBJECTS := $(BOOT_C_OBJECTS) $(BOOT_CPP_OBJECTS)
 
 BOOT_ELF := $(BUILD_DIR)/bootloader/bootloader.elf
 BOOT_BIN := $(BUILD_DIR)/bootloader/bootloader.bin
@@ -140,15 +133,10 @@ BOOT_MAP := $(BUILD_DIR)/bootloader/bootloader.map
 # Application objects
 #----------------------------------------------------------------------
 
-APP_C_OBJECTS := \
-	$(BUILD_DIR)/application/obj/startup.o
+APP_C_OBJECTS := $(patsubst %.c, $(BUILD_DIR)/application/obj/%.o, $(APP_C_SOURCES))
+APP_CPP_OBJECTS := $(patsubst %.cpp, $(BUILD_DIR)/application/obj/%.o, $(APP_CPP_SOURCES))
 
-APP_CPP_OBJECTS := \
-	$(BUILD_DIR)/application/obj/main.o
-
-APP_OBJECTS := \
-	$(APP_C_OBJECTS) \
-	$(APP_CPP_OBJECTS)
+APP_OBJECTS := $(APP_C_OBJECTS) $(APP_CPP_OBJECTS)
 
 APP_ELF := $(BUILD_DIR)/application/$(APP_TARGET).elf
 APP_BIN := $(BUILD_DIR)/application/$(APP_TARGET).bin
@@ -190,39 +178,27 @@ $(APP_BIN): $(APP_ELF)
 	@mkdir -p $(dir $@)
 	$(OBJCOPY) -O binary $< $@
 
-#----------------------------------------------------------------------
-# Compile bootloader C
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# Compile C sources
+# ----------------------------------------------------------------------
 
-$(BUILD_DIR)/bootloader/obj/bootloader_startup.o: startup/bootloader_startup.c
+$(BUILD_DIR)/bootloader/obj/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
-#----------------------------------------------------------------------
-# Compile bootloader C++
-#----------------------------------------------------------------------
-
-$(BUILD_DIR)/bootloader/obj/main.o: bootloader/main.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
-
-$(BUILD_DIR)/bootloader/obj/BootManager.o: bootloader/BootManager.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
-
-#----------------------------------------------------------------------
-# Compile application C
-#----------------------------------------------------------------------
-
-$(BUILD_DIR)/application/obj/startup.o: startup/startup.c
+$(BUILD_DIR)/application/obj/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
 
-#----------------------------------------------------------------------
-# Compile application C++
-#----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# Compile C++ sources
+# ----------------------------------------------------------------------
 
-$(BUILD_DIR)/application/obj/main.o: application/main.cpp
+$(BUILD_DIR)/bootloader/obj/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
+
+$(BUILD_DIR)/application/obj/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
 

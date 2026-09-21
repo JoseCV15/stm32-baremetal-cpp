@@ -1,36 +1,29 @@
 #include "stm32l476xx.h"
+#include "Gpio.hpp"
 
 extern "C" int main()
 {
-    RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+    Gpio led(GPIOA, 5);
+    Gpio button(GPIOC, 13);
+    Gpio uartTx(GPIOA, 2);
 
-    GPIOA->MODER &= ~(3U << (5U * 2U));
-    GPIOA->MODER |=  (1U << (5U * 2U));
-    GPIOA->OTYPER &= ~(1U << 5U);
-    GPIOA->OSPEEDR &= ~(3U << (5U * 2U));
-
-
-    GPIOA->PUPDR &= ~(3U << (5U * 2U));
+    led.init(gpio::Mode::Output);
+    button.init(gpio::Mode::Input, gpio::Pull::Up);
+    uartTx.init(
+        gpio::Mode::Alternate,
+        gpio::Pull::None,
+        gpio::OutputType::PushPull,
+        gpio::Speed::VeryHigh,
+        7U
+    );
 
     while (true)
     {
-        /*
-         * Set PA5
-         */
-        GPIOA->BSRR = GPIO_BSRR_BS5;
-
-        for (volatile uint32_t i = 0U; i < 100000U; ++i)
-        {
+        if (button.read() == gpio::State::Low) {
+            led.set();
         }
-
-
-        /*
-         * Reset PA5
-         */
-        GPIOA->BSRR = GPIO_BSRR_BR5;
-
-        for (volatile uint32_t i = 0U; i < 100000U; ++i)
-        {
+        else {
+            led.reset();
         }
     }
 }
