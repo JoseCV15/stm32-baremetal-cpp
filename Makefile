@@ -53,7 +53,8 @@ APP_C_SOURCES := \
 
 APP_CPP_SOURCES := \
 	application/main.cpp \
-	drivers/gpio/Gpio.cpp
+	drivers/gpio/Gpio.cpp \
+	drivers/leds/Led.cpp
 
 #----------------------------------------------------------------------
 # Include paths
@@ -66,6 +67,7 @@ INCLUDES := \
 	-Iapplication \
 	-Ibootloader \
 	-Idrivers/gpio \
+	-Idrivers/leds \
 	-Iservices \
 	-Imiddleware \
 	-Iconfig

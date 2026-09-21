@@ -101,27 +101,27 @@ void Gpio::init(gpio::Mode mode, gpio::Pull pull, gpio::OutputType type, gpio::S
     }
 }
 
-void Gpio::set()
+void Gpio::setPin()
 {
     m_port->BSRR |= (1U << m_pin);
 }
 
-void Gpio::reset()
+void Gpio::resetPin()
 {
     m_port->BSRR |= (1U << (m_pin + 16U));
 }
 
-void Gpio::write(gpio::State state)
+void Gpio::writePin(gpio::State state)
 {
     if (state == gpio::State::High) {
-        set();
+        setPin();
     }
     else {
-        reset();
+        resetPin();
     }
 }
 
-gpio::State Gpio::read() const
+gpio::State Gpio::readPin() const
 {
     const std::uint32_t mask = 1U << m_pin;
 
@@ -133,14 +133,14 @@ gpio::State Gpio::read() const
     }
 }
 
-void Gpio::toggle()
+void Gpio::togglePin()
 {
     // Read current gpio state
     const std::uint32_t mask = 1U << m_pin;
     if ((m_port->ODR & mask) != 0) {
-        reset();
+        resetPin();
     }
     else {
-        set();
+        setPin();
     }
 }

@@ -54,17 +54,49 @@ public:
         gpio::Speed speed = gpio::Speed::Low,
         std::uint8_t af = 0U
     );
-    void set();
-    void reset();
 
-    void write(gpio::State state);
-    gpio::State read() const;
-    void toggle();
+    /** @brief Sets a GPIO pin to a high state */
+    void setPin();
 
+    /** @brief Resets a GPIO pin to a low state */
+    void resetPin();
+
+    /** @brief Toggles the state of a GPIO pin */
+    void togglePin();
+
+    /* Optional: Writes the state of a GPIO pin*/
+    void writePin(gpio::State state);
+
+    /** @brief Reads the state of a GPIO pin */
+    gpio::State readPin() const;
+
+    /**
+     * @brif Sets the mode for a GPIO pin
+     * @param mode Output, input, alternate, analog
+     */
     void setMode(gpio::Mode mode);
+
+    /**
+     * @brief Sets the pull-up/pull-down register for a GPIO pin
+     * @param pull None, up, down
+     */
     void setPull(gpio::Pull pull);
+
+    /** @brief Configures the AFR for a given pin.
+     *  @param af The alternate function number (0-15)
+     */
     void setAlternate(std::uint8_t af);
+
+    /**
+     * @brief Sets the output speed for a GPIO pin
+     * @param speed Low, medium, high, or very high
+     */
     void setSpeed(gpio::Speed speed);
+
+    /**
+     * @brief Sets the output type of a GPIO pin
+     * @param type Push-pull or open-drain
+     */
     void setOutputType(gpio::OutputType type);
 
 

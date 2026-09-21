@@ -1,13 +1,14 @@
 #include "stm32l476xx.h"
 #include "Gpio.hpp"
+#include "Led.hpp"
 
 extern "C" int main()
 {
-    Gpio led(GPIOA, 5);
+    Led led(GPIOA, 5, false);
     Gpio button(GPIOC, 13);
     Gpio uartTx(GPIOA, 2);
 
-    led.init(gpio::Mode::Output);
+    led.init();
     button.init(gpio::Mode::Input, gpio::Pull::Up);
     uartTx.init(
         gpio::Mode::Alternate,
@@ -19,11 +20,11 @@ extern "C" int main()
 
     while (true)
     {
-        if (button.read() == gpio::State::Low) {
-            led.set();
+        if (button.readPin() == gpio::State::Low) {
+            led.on();
         }
         else {
-            led.reset();
+            led.off();
         }
     }
 }
