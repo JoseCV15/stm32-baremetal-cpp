@@ -1,8 +1,12 @@
 #include "unity.h"
 #include "rcc.h"
 #include "rcc_clock.h"
+#include "stm32l476xx.h"
 
-void setUp(void) {}
+void setUp(void) 
+{
+    stm32_mock_reset();
+}
 void tearDown(void) {}
 
 void test_rcc_init_rejects_hse(void)

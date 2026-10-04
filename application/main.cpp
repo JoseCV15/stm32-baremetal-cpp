@@ -1,30 +1,20 @@
 #include "stm32l476xx.h"
-#include "Gpio.hpp"
-#include "Led.hpp"
+#include "gpio.h"
+#include "led.h"
+
+static led_t led_green = {
+    .port = GPIO_PORT_A,
+    .pin = GPIO_PIN_5,
+    .polarity = true
+};
 
 extern "C" int main()
 {
-    Led led(GPIOA, 5, false);
-    Gpio button(GPIOC, 13);
-    Gpio uartTx(GPIOA, 2);
 
-    led.init();
-    button.init(gpio::Mode::Input, gpio::Pull::Up);
-    uartTx.init(
-        gpio::Mode::Alternate,
-        gpio::Pull::None,
-        gpio::OutputType::PushPull,
-        gpio::Speed::VeryHigh,
-        7U
-    );
-
-    while (true)
+    led_init(&led_green);
+    
+    while (1)
     {
-        if (button.readPin() == gpio::State::Low) {
-            led.on();
-        }
-        else {
-            led.off();
-        }
+        led_toggle(&led_green);
     }
 }
