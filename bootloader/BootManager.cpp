@@ -64,6 +64,8 @@ bool BootManager::jumpToApplication() const
 
     __set_MSP(appStack);
 
+    __enable_irq();
+
     const auto appResetHandlerPtr = reinterpret_cast<void (*)(void)>(appResetHandler);
     appResetHandlerPtr();
 

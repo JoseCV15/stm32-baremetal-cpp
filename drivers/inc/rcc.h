@@ -77,6 +77,7 @@ status_t rcc_init(rcc_clk_src_t src, uint32_t sysclk_hz);
 status_t rcc_init_config(const rcc_config_t *config);
 
 status_t rcc_enable_clk_peripheral(rcc_peripheral_t periheral);
+status_t rcc_disable_clk_peripheral(rcc_peripheral_t periheral);
 
 uint32_t rcc_get_sysclk(void);
 uint32_t rcc_get_hclk(void);

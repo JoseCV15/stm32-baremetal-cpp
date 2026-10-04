@@ -464,6 +464,140 @@ status_t rcc_init_config(const rcc_config_t *config)
 
 }
 
+status_t rcc_enable_clk_peripheral(rcc_peripheral_t peripheral) {
+    switch (peripheral) {
+        case RCC_PERIPHERAL_GPIOA:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIOAEN;
+            break;
+        case RCC_PERIPHERAL_GPIOB:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIOBEN;
+            break;
+        case RCC_PERIPHERAL_GPIOC:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;
+            break;
+        case RCC_PERIPHERAL_GPIOD:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;
+            break;
+        case RCC_PERIPHERAL_GPIOE:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
+            break;
+        case RCC_PERIPHERAL_GPIOF:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIOFEN;
+            break;
+        case RCC_PERIPHERAL_GPIOG:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIOGEN;
+            break;
+        case RCC_PERIPHERAL_GPIOH:
+            RCC->AHB2ENR |= RCC_AHB2ENR_GPIOHEN;
+            break;
+        case RCC_PERIPHERAL_USART1:
+            RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+            break;
+        case RCC_PERIPHERAL_USART2:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_USART2EN;
+            break;
+        case RCC_PERIPHERAL_USART3:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_USART3EN;
+            break;
+        case RCC_PERIPHERAL_UART4:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_UART4EN;
+            break;
+        case RCC_PERIPHERAL_UART5:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_UART5EN;
+            break;
+        case RCC_PERIPHERAL_SPI1:
+            RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
+            break;
+        case RCC_PERIPHERAL_SPI2:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_SPI2EN;
+            break;
+        case RCC_PERIPHERAL_SPI3:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_SPI3EN;
+            break;
+        case RCC_PERIPHERAL_I2C1:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_I2C1EN;
+            break;
+        case RCC_PERIPHERAL_I2C2:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_I2C2EN;
+            break;
+        case RCC_PERIPHERAL_I2C3:
+            RCC->APB1ENR1 |= RCC_APB1ENR1_I2C3EN;
+            break;
+        default:
+            return STATUS_INVALID_ARGUMENT;
+    }
+
+    return STATUS_OK;
+}
+
+
+status_t rcc_disable_clk_peripheral(rcc_peripheral_t peripheral) {
+    switch (peripheral) {
+        case RCC_PERIPHERAL_GPIOA:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOAEN;
+            break;
+        case RCC_PERIPHERAL_GPIOB:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOBEN;
+            break;
+        case RCC_PERIPHERAL_GPIOC:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOCEN;
+            break;
+        case RCC_PERIPHERAL_GPIOD:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIODEN;
+            break;
+        case RCC_PERIPHERAL_GPIOE:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOEEN;
+            break;
+        case RCC_PERIPHERAL_GPIOF:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOFEN;
+            break;
+        case RCC_PERIPHERAL_GPIOG:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOGEN;
+            break;
+        case RCC_PERIPHERAL_GPIOH:
+            RCC->AHB2ENR &= ~RCC_AHB2ENR_GPIOHEN;
+            break;
+        case RCC_PERIPHERAL_USART1:
+            RCC->APB2ENR &= ~RCC_APB2ENR_USART1EN;
+            break;
+        case RCC_PERIPHERAL_USART2:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_USART2EN;
+            break;
+        case RCC_PERIPHERAL_USART3:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_USART3EN;
+            break;
+        case RCC_PERIPHERAL_UART4:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_UART4EN;
+            break;
+        case RCC_PERIPHERAL_UART5:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_UART5EN;
+            break;
+        case RCC_PERIPHERAL_SPI1:
+            RCC->APB2ENR &= ~RCC_APB2ENR_SPI1EN;
+            break;
+        case RCC_PERIPHERAL_SPI2:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_SPI2EN;
+            break;
+        case RCC_PERIPHERAL_SPI3:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_SPI3EN;
+            break;
+        case RCC_PERIPHERAL_I2C1:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_I2C1EN;
+            break;
+        case RCC_PERIPHERAL_I2C2:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_I2C2EN;
+            break;
+        case RCC_PERIPHERAL_I2C3:
+            RCC->APB1ENR1 &= ~RCC_APB1ENR1_I2C3EN;
+            break;
+        default:
+            return STATUS_INVALID_ARGUMENT;
+    }
+
+    return STATUS_OK;
+}
+
+
 /**
  * CMSIS-standard entry point called from Reset_Handler before main()
  * Configures the system clock to 80 MHz using HSI16 as the PLL input source

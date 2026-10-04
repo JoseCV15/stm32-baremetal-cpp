@@ -31,7 +31,6 @@ CPU_FLAGS := \
 #----------------------------------------------------------------------
 # Directories
 #----------------------------------------------------------------------
-
 BUILD_DIR := build
 
 CMSIS_CORE_DIR := external/cmsis-core/CMSIS/Core/Include
@@ -40,21 +39,22 @@ STM32L4_DIR    := external/stm32l4-cmsis/Include
 #----------------------------------------------------------------------
 # Source files
 #----------------------------------------------------------------------
-
-BOOT_C_SOURCES := \
-	startup/bootloader_startup.c
+BOOT_C_SOURCES := startup/bootloader_startup.c 
 
 BOOT_CPP_SOURCES := \
 	bootloader/main.cpp \
 	bootloader/BootManager.cpp
 
 APP_C_SOURCES := \
-	startup/startup.c
+	startup/startup.c \
+	drivers/src/gpio.c \
+	drivers/src/led.c \
+	drivers/src/rcc_clock.c \
+	drivers/src/rcc.c \
+	drivers/src/uart.c \
+	drivers/src/systick.c
 
-APP_CPP_SOURCES := \
-	application/main.cpp \
-	drivers/gpio/Gpio.cpp \
-	drivers/leds/Led.cpp
+APP_CPP_SOURCES := application/main.cpp
 
 #----------------------------------------------------------------------
 # Include paths
@@ -66,11 +66,7 @@ INCLUDES := \
 	-Istartup \
 	-Iapplication \
 	-Ibootloader \
-	-Idrivers/gpio \
-	-Idrivers/leds \
-	-Iservices \
-	-Imiddleware \
-	-Iconfig
+	-Idrivers/inc 
 
 #----------------------------------------------------------------------
 # Defines
@@ -150,12 +146,7 @@ APP_MAP := $(BUILD_DIR)/application/$(APP_TARGET).map
 
 $(BOOT_ELF): $(BOOT_OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CXX) \
-		$(LDFLAGS) \
-		-T$(BOOT_LDSCRIPT) \
-		-Wl,-Map=$(BOOT_MAP) \
-		$^ $(LDLIBS) \
-		-o $@
+	$(CXX) $(LDFLAGS) -T$(BOOT_LDSCRIPT) -Wl,-Map=$(BOOT_MAP) $^ $(LDLIBS) -o $@
 	$(SIZE) $@
 
 $(BOOT_BIN): $(BOOT_ELF)
@@ -168,12 +159,7 @@ $(BOOT_BIN): $(BOOT_ELF)
 
 $(APP_ELF): $(APP_OBJECTS)
 	@mkdir -p $(dir $@)
-	$(CXX) \
-		$(LDFLAGS) \
-		-T$(APP_LDSCRIPT) \
-		-Wl,-Map=$(APP_MAP) \
-		$^ $(LDLIBS) \
-		-o $@
+	$(CXX) $(LDFLAGS) -T$(APP_LDSCRIPT) -Wl,-Map=$(APP_MAP) $^ $(LDLIBS) -o $@
 	$(SIZE) $@
 
 $(APP_BIN): $(APP_ELF)
@@ -183,7 +169,6 @@ $(APP_BIN): $(APP_ELF)
 # ----------------------------------------------------------------------
 # Compile C sources
 # ----------------------------------------------------------------------
-
 $(BUILD_DIR)/bootloader/obj/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
@@ -195,7 +180,6 @@ $(BUILD_DIR)/application/obj/%.o: %.c
 # ----------------------------------------------------------------------
 # Compile C++ sources
 # ----------------------------------------------------------------------
-
 $(BUILD_DIR)/bootloader/obj/%.o: %.cpp
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) -MMD -MP -c $< -o $@
@@ -207,19 +191,13 @@ $(BUILD_DIR)/application/obj/%.o: %.cpp
 #----------------------------------------------------------------------
 # Targets
 #----------------------------------------------------------------------
-
 .PHONY: all bootloader application clean \
 	flash-bootloader flash-application flash info
 
 all: bootloader application
 
 bootloader: $(BOOT_BIN)
-
 application: $(APP_BIN)
-
-#----------------------------------------------------------------------
-# Clean
-#----------------------------------------------------------------------
 
 clean:
 	rm -rf $(BUILD_DIR)
@@ -227,35 +205,19 @@ clean:
 #----------------------------------------------------------------------
 # Flash
 #----------------------------------------------------------------------
+OPENOCD = openocd
+OPENOCD_CFG = -f interface/stlink.cfg -f target/stm32l4x.cfg
 
 flash-bootloader: $(BOOT_BIN)
-	STM32_Programmer_CLI.exe \
-		-c port=SWD mode=UR \
-		-w $(BOOT_BIN) 0x08000000 \
-		-v -rst
+	$(OPENOCD) $(OPENOCD_CFG) -c "program $(BOOT_BIN) 0x08000000 verify" -c "reset run" -c "shutdown"
 
 flash-application: $(APP_BIN)
-	STM32_Programmer_CLI.exe \
-		-c port=SWD mode=UR \
-		-w $(APP_BIN) 0x08008000 \
-		-v -rst
+	$(OPENOCD) $(OPENOCD_CFG) -c "program $(APP_BIN) 0x08008000 verify" -c "reset run" -c "shutdown"
 
 flash: all
-	STM32_Programmer_CLI.exe \
-		-c port=SWD mode=UR \
-		-w $(BOOT_BIN) 0x08000000 \
-		-v -rst
+	$(OPENOCD) $(OPENOCD_CFG) -c "program $(BOOT_BIN) 0x08000000 verify" -c "program $(APP_BIN) 0x08008000 verify" \
+		-c "reset run" -c "shutdown"
 
-	STM32_Programmer_CLI.exe \
-		-c port=SWD mode=UR \
-		-w $(APP_BIN) 0x08008000 \
-		-v -rst
-
-#----------------------------------------------------------------------
-# Dependencies
-#----------------------------------------------------------------------
-
--include $(shell find $(BUILD_DIR) -name "*.d" 2>/dev/null)
 
 #----------------------------------------------------------------------
 # Information

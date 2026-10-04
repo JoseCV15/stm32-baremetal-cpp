@@ -1,5 +1,6 @@
 #include "gpio.h"
 #include "stm32l476xx.h"
+#include "rcc.h"
 
 static bool gpio_is_valid_port(gpio_port_t port)
 {
@@ -34,35 +35,42 @@ static GPIO_TypeDef* gpio_get_port_instance(gpio_port_t port)
  */
 static status_t gpio_enable_clock(gpio_port_t port)
 {
-    uint32_t mask = 0U;
+    rcc_peripheral_t peripheral;
     if (!gpio_is_valid_port(port)) {
-         return STATUS_INVALID_ARGUMENT;
+        return STATUS_INVALID_ARGUMENT;
     }
-
-    mask = (1U << (uint32_t)port);
-    RCC->AHB2ENR |= mask;
-    if ((RCC->AHB2ENR & mask) == 0U) {
-        
+    switch (port) {
+        case GPIO_PORT_A: peripheral = RCC_PERIPHERAL_GPIOA; break;
+        case GPIO_PORT_B: peripheral = RCC_PERIPHERAL_GPIOB; break;
+        case GPIO_PORT_C: peripheral = RCC_PERIPHERAL_GPIOC; break;
+        case GPIO_PORT_D: peripheral = RCC_PERIPHERAL_GPIOD; break;
+        case GPIO_PORT_E: peripheral = RCC_PERIPHERAL_GPIOE; break;
+        case GPIO_PORT_F: peripheral = RCC_PERIPHERAL_GPIOF; break;
+        default: return STATUS_INVALID_ARGUMENT;
     }
-    return STATUS_OK;
+    return rcc_enable_clk_peripheral(peripheral);
 }
+
 
 /**
  * Disable clock for a specific Gpio port
 */
 static status_t gpio_disable_clock(gpio_port_t port)
 {
-    uint32_t mask = 0U;
+    rcc_peripheral_t peripheral;
     if (!gpio_is_valid_port(port)) {
         return STATUS_INVALID_ARGUMENT;
     }
-
-    mask = (1U << (uint32_t)port);
-    RCC->AHB2ENR &= ~mask;
-    if ((RCC->AHB2ENR & mask) == 0U) {
-        
+    switch (port) {
+        case GPIO_PORT_A: peripheral = RCC_PERIPHERAL_GPIOA; break;
+        case GPIO_PORT_B: peripheral = RCC_PERIPHERAL_GPIOB; break;
+        case GPIO_PORT_C: peripheral = RCC_PERIPHERAL_GPIOC; break;
+        case GPIO_PORT_D: peripheral = RCC_PERIPHERAL_GPIOD; break;
+        case GPIO_PORT_E: peripheral = RCC_PERIPHERAL_GPIOE; break;
+        case GPIO_PORT_F: peripheral = RCC_PERIPHERAL_GPIOF; break;
+        default: return STATUS_INVALID_ARGUMENT;
     }
-    return STATUS_OK;
+    return rcc_disable_clk_peripheral(peripheral);
 }
 
 /**
