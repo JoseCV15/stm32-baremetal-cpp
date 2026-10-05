@@ -52,7 +52,8 @@ APP_C_SOURCES := \
 	drivers/src/rcc_clock.c \
 	drivers/src/rcc.c \
 	drivers/src/uart.c \
-	drivers/src/systick.c
+	drivers/src/systick.c \
+	drivers/src/button.c
 
 APP_CPP_SOURCES := application/main.cpp
 

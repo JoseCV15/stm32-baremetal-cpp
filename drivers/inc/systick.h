@@ -34,10 +34,6 @@ void systick_delay_ms(uint32_t delay_ms);
 */
 uint32_t systick_get_tick(void);
 
-
-
-
-
 #ifdef __cplusplus
 }
 #endif

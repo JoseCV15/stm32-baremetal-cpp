@@ -1,5 +1,6 @@
 #include "led.h"
 #include "systick.h"
+#include "button.h"
 
 
 static led_t led_green = {
@@ -12,18 +13,15 @@ static led_t led_green = {
 extern "C" int main()
 {
     led_init(&led_green);
+    button_init(BUTTON_USER);
 
-    if (systick_init(1000U) != STATUS_OK)
-    {
-        while (1)
-        {
-            led_on(&led_green);
-        }
-    }
+    systick_init(1000);
+
 
     while (1)
     {
-        led_toggle(&led_green);
-        systick_delay_ms(500U);
+        if (button_was_pressed(BUTTON_USER) != 0U) {
+            led_toggle(&led_green);
+        }
     }
 }
