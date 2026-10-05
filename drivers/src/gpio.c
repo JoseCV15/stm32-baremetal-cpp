@@ -206,7 +206,7 @@ static status_t gpio_configure_af(gpio_port_t port, gpio_pin_mask_t pin_mask, gp
 status_t gpio_init(const gpio_config_t *config)
 {
     status_t res;
-    if (!config || !gpio_is_valid_port(config->port) || (config->pin_mask == 0u)) {
+    if (!config || !gpio_is_valid_port(config->port) || (config->pin_mask == 0U)) {
         return STATUS_INVALID_ARGUMENT;
     }
 
@@ -253,6 +253,7 @@ status_t gpio_init(const gpio_config_t *config)
             if (res != STATUS_OK) {
                 return res;
             }
+
             res = gpio_configure_af(config->port, config->pin_mask, config->af);
             if (res != STATUS_OK) {
                 return res;
@@ -289,7 +290,7 @@ status_t gpio_clear_pin(gpio_port_t port, gpio_pin_mask_t pin_mask)
     GPIO_TypeDef* gpio_port = gpio_get_port_instance(port);
     if (!gpio_port) return STATUS_INVALID_ARGUMENT;
 
-    gpio_port->BSRR = (uint32_t) (pin_mask + 16U);
+    gpio_port->BSRR = (uint32_t) (pin_mask << 16U);
     return STATUS_OK;
 }
 

@@ -1,6 +1,7 @@
 #include "led.h"
 #include "systick.h"
 #include "button.h"
+#include "uart.h"
 
 
 static led_t led_green = {
@@ -12,16 +13,12 @@ static led_t led_green = {
 
 extern "C" int main()
 {
-    led_init(&led_green);
-    button_init(BUTTON_USER);
-
-    systick_init(1000);
+    uart_init();
+    uart_send_string(UART_ID_2, "Hello STM32\r\n");
 
 
     while (1)
     {
-        if (button_was_pressed(BUTTON_USER) != 0U) {
-            led_toggle(&led_green);
-        }
+        
     }
 }
