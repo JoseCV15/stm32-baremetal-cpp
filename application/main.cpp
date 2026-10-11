@@ -14,11 +14,17 @@ static led_t led_green = {
 extern "C" int main()
 {
     uart_init();
-    uart_send_string(UART_ID_2, "Hello STM32\r\n");
+
 
 
     while (1)
     {
+
+        uart_send_string(UART_ID_2, "TEST\r\n");
+
+        for (volatile uint32_t i = 0; i < 1000000U; i++) {
+            __asm volatile ("nop");
+        }
         
     }
 }

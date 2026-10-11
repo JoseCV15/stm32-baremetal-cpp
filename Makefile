@@ -84,6 +84,7 @@ COMMON_FLAGS := \
 	$(CPU_FLAGS) \
 	$(INCLUDES) \
 	$(DEFINES) \
+	-g3 \
 	-ffunction-sections \
 	-fdata-sections \
 	-Wall \
@@ -209,16 +210,15 @@ clean:
 OPENOCD = openocd
 OPENOCD_CFG = -f interface/stlink.cfg -f target/stm32l4x.cfg
 
-flash-bootloader: $(BOOT_BIN)
+flash-bootl: $(BOOT_BIN)
 	$(OPENOCD) $(OPENOCD_CFG) -c "program $(BOOT_BIN) 0x08000000 verify" -c "reset run" -c "shutdown"
 
-flash-application: $(APP_BIN)
+flash-app: $(APP_BIN)
 	$(OPENOCD) $(OPENOCD_CFG) -c "program $(APP_BIN) 0x08008000 verify" -c "reset run" -c "shutdown"
 
 flash: all
 	$(OPENOCD) $(OPENOCD_CFG) -c "program $(BOOT_BIN) 0x08000000 verify" -c "program $(APP_BIN) 0x08008000 verify" \
 		-c "reset run" -c "shutdown"
-
 
 #----------------------------------------------------------------------
 # Information

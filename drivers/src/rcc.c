@@ -607,6 +607,7 @@ status_t rcc_disable_clk_peripheral(rcc_peripheral_t peripheral) {
 __attribute__((weak)) void SystemInit(void)
 {
     (void)rcc_init(RCC_SYSCLK_PLL, RCC_SYSCLK_DEFAULT_HZ);
+    //status_t status = rcc_init(RCC_SYSCLK_PLL, RCC_SYSCLK_DEFAULT_HZ);
 }
 
 uint32_t rcc_get_sysclk(void)     { return s_sysclk; }

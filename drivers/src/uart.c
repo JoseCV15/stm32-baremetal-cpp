@@ -248,7 +248,7 @@ status_t uart_send_byte(uart_id_t uart_id, uint8_t byte)
 
 status_t uart_send_string(uart_id_t uart_id, const char *str)
 {
-    status_t status;
+    status_t status = STATUS_OK;
     if (!uart_is_valid(uart_id) || (!str)) {
         return STATUS_INVALID_ARGUMENT;
     }
