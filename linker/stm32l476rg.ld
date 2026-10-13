@@ -287,7 +287,8 @@ SECTIONS
     /*
      * End of statically allocated SRAM.
      */
-
+    . = ALIGN(8);
+    end = .;
     _end = .;
 
 

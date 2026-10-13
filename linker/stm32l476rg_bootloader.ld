@@ -113,6 +113,8 @@ SECTIONS
 
     _estack = ORIGIN(SRAM) + LENGTH(SRAM);
 
+    . = ALIGN(8);
+    end = .;
     _end = .;
 
     ASSERT(

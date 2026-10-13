@@ -10,7 +10,6 @@ BOOT_TARGET := bootloader
 #----------------------------------------------------------------------
 # Toolchain
 #----------------------------------------------------------------------
-
 CC      := arm-none-eabi-gcc
 CXX     := arm-none-eabi-g++
 OBJCOPY := arm-none-eabi-objcopy
@@ -32,7 +31,6 @@ CPU_FLAGS := \
 # Directories
 #----------------------------------------------------------------------
 BUILD_DIR := build
-
 CMSIS_CORE_DIR := external/cmsis-core/CMSIS/Core/Include
 STM32L4_DIR    := external/stm32l4-cmsis/Include
 
@@ -53,9 +51,11 @@ APP_C_SOURCES := \
 	drivers/src/rcc.c \
 	drivers/src/uart.c \
 	drivers/src/systick.c \
-	drivers/src/button.c
+	drivers/src/button.c \
+	lib/src/ringbuffer.c
 
-APP_CPP_SOURCES := application/main.cpp
+APP_CPP_SOURCES := application/main.cpp \
+	lib/src/logger.cpp
 
 #----------------------------------------------------------------------
 # Include paths
@@ -67,7 +67,8 @@ INCLUDES := \
 	-Istartup \
 	-Iapplication \
 	-Ibootloader \
-	-Idrivers/inc 
+	-Idrivers/inc \
+	-Ilib/inc
 
 #----------------------------------------------------------------------
 # Defines
@@ -107,14 +108,9 @@ CXXFLAGS := \
 BOOT_LDSCRIPT := linker/stm32l476rg_bootloader.ld
 APP_LDSCRIPT  := linker/stm32l476rg.ld
 
-LDFLAGS := \
-	$(CPU_FLAGS) \
-	-Wl,--gc-sections \
-	-nodefaultlibs \
-	-nostdlib
-
-LDLIBS := \
-	-lgcc
+# newlib-nano and stubs for baremetal  environment
+LDFLAGS := $(CPU_FLAGS) -Wl,--gc-sections -nostartfiles --specs=nano.specs --specs=nosys.specs 
+LDLIBS := 
 
 #----------------------------------------------------------------------
 # Bootloader objects
